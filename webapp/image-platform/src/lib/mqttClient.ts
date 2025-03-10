@@ -1,16 +1,25 @@
-import mqtt from 'mqtt';
-const BROKER_URL = 'mqtt://your-broker-url'
-const client = mqtt.connect(BROKER_URL); // e.g., HiveMQ Cloud
+import mqtt from 'mqtt'
+import prisma from './prisma'
+// import { saveImage } from '../app/api/save-image/route'
+
+const client = mqtt.connect(process.env.MQTT_BROKER_URL!)
+
 client.on('connect', () => {
-    console.log('Connected to MQTT');
-    client.subscribe('devices/images');
-});
+    console.log('Connected to MQTT broker')
+    client.subscribe('devices/images')
+})
 
-client.on('message', (topic, message) => {
+client.on('message', async (topic, payload) => {
     if (topic === 'devices/images') {
-        const { image, metadata } = JSON.parse(message.toString());
-        // Save image to storage & metadata to database (Step 3)
-    }
-});
+        const { deviceId, image, metadata } = JSON.parse(payload.toString())
 
-export default client;
+        // Save to database and storage
+        // await saveImage({
+        //     deviceId,
+        //     imageBuffer: Buffer.from(image, 'base64'),
+        //     parameters: metadata
+        // })
+    }
+})
+
+export default client
