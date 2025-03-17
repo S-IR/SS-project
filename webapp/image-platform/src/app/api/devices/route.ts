@@ -9,9 +9,9 @@ export async function GET() {
     })
 }
 
-// // POST new device
-// export async function POST(request: Request) {
-//     const data = await request.json()
-//     const device = await prisma.device.create({ data })
-//     return NextResponse.json(device, { status: 201 })
-// }
+// POST new device
+export async function POST(request: Request) {
+    const data = await request.json()
+    const device = await prisma.device.create({ data })
+    return NextResponse.json(device, { status: 201 })
+}
