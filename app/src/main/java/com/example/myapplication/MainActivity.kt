@@ -38,6 +38,8 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 class MainActivity : AppCompatActivity() {
+    private var isMqttConnected = false
+
     private lateinit var mqttClient: MqttClient
     private lateinit var imageCapture: ImageCapture
     private lateinit var statusTextView: TextView
@@ -76,7 +78,12 @@ class MainActivity : AppCompatActivity() {
                 updateStatus("ERROR: No network connection")
                 return@setOnClickListener
             }
-
+            if (!isMqttConnected) {
+                Toast.makeText(this, "MQTT not connected", Toast.LENGTH_LONG).show()
+                updateStatus("ERROR: MQTT not connected, please wait...")
+                // Optionally, you can call setupMqtt() again or disable the button until connected.
+                return@setOnClickListener
+            }
             if (!::mqttClient.isInitialized || !mqttClient.isConnected) {
                 Toast.makeText(this, "MQTT not connected", Toast.LENGTH_LONG).show()
                 updateStatus("ERROR: MQTT not connected, reconnecting...")
@@ -144,13 +151,14 @@ class MainActivity : AppCompatActivity() {
 
                 mqttClient.connect(options)
 
-                val connectStatus = if (mqttClient.isConnected) {
+                var connectStatus = "MQTT Connection failed"
+                if (mqttClient.isConnected) {
                     mqttClient.publish("$mqttTopic/status", "Connected".toByteArray(), 1, false)
-                    "MQTT Connected to $mqttBroker"
+                    isMqttConnected = true  // Add this line
+                    connectStatus = "MQTT Connected to $mqttBroker"
                 } else {
-                    "MQTT Connection failed"
+                    connectStatus = "MQTT Connection failed"
                 }
-
                 withContext(Dispatchers.Main) {
                     updateStatus(connectStatus)
                     Toast.makeText(this@MainActivity, connectStatus, Toast.LENGTH_LONG).show()
