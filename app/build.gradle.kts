@@ -52,7 +52,7 @@ android {
         viewBinding = true
     }
     packagingOptions {
-        pickFirst("lib/*/libc++_shared.so") // CORRECTED LINE
+        pickFirst("lib/*/libc++_shared.so")
     }
 }
 
@@ -65,23 +65,16 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
+    // CameraX dependencies
     implementation("androidx.camera:camera-core:1.3.0")
     implementation("androidx.camera:camera-camera2:1.3.0")
     implementation("androidx.camera:camera-lifecycle:1.3.0")
     implementation("androidx.camera:camera-view:1.3.0")
 
+    // MQTT dependencies
     implementation("org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.5")
-    implementation("org.eclipse.paho:org.eclipse.paho.android.service:1.1.1")
+    implementation("androidx.legacy:legacy-support-v4:1.0.0")
 
-
-    implementation("org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.5")
-
-    dependencies {
-        implementation("androidx.camera:camera-core:1.3.0")
-        implementation("androidx.camera:camera-lifecycle:1.3.0")
-        implementation("androidx.camera:camera-view:1.3.0")
-        implementation("org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.5")
-        implementation("org.eclipse.paho:org.eclipse.paho.android.service:1.1.1")
-        implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
-    }
+    // Lifecycle components
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
 }
